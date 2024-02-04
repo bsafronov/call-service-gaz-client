@@ -1,21 +1,22 @@
-import { DataTableColumnHeader } from "@/components/ui/table/dataTableColumnHeader";
+import { DataTableColumnHeader } from "@/components/ui/table/DataTableColumnHeader";
 import { cn } from "@/lib/utils";
 import { Call, CallStatus, CallType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
-const statusLabel: Record<CallStatus, string> = {
+export const statusLabel: Record<CallStatus, string> = {
   "in queue": "В очереди",
   "in progress": "В работе",
   finished: "Готово",
 };
 
-const typeLabel: Record<CallType, string> = {
+export const typeLabel: Record<CallType, string> = {
   error: "Ошибка",
   recommendation: "Рекомендация",
   remark: "Замечание",
 };
 
-const statusStyle: Record<CallStatus, string> = {
+export const statusStyle: Record<CallStatus, string> = {
   "in queue": "bg-slate-200",
   "in progress": "bg-amber-300",
   finished: "bg-emerald-300",
@@ -27,7 +28,7 @@ export const columns: ColumnDef<Call>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Дата" />
     ),
-    cell: ({ row }) => row.original.date,
+    cell: ({ row }) => format(row.original.createdAt, "dd.MM.yyyy"),
   },
   {
     accessorKey: "author",
@@ -59,10 +60,10 @@ export const columns: ColumnDef<Call>[] = [
       <span
         className={cn(
           "font-semibold px-2 rounded-md py-1",
-          statusStyle[row.original.status]
+          statusStyle[row.original.callStatus]
         )}
       >
-        {statusLabel[row.original.status]}
+        {statusLabel[row.original.callStatus]}
       </span>
     ),
   },

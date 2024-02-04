@@ -60,7 +60,7 @@ export const Select = <
         variant={"outline"}
         aria-roledescription="select"
         className={cn(
-          "justify-between gap-4 pl-3 pr-2 h-auto font-normal",
+          "min-h-10 justify-between gap-4 pl-3 pr-2 h-auto font-normal",
           props.className
         )}
       >

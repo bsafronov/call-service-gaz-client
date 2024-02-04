@@ -14,16 +14,18 @@ import {
 import { Input } from "./ui/input";
 import { Select } from "./ui/custom-select";
 import { Textarea } from "./ui/textarea";
+import { useCreateCall } from "@/api";
+import { CallType } from "@/types";
+import { useNewCallModal } from "@/store";
 
 const schema = z.object({
-  date: z.string(),
   author: z.string().min(3, { message: "Обязательное поле" }),
   callType: z
     .object({
       label: z.string(),
       value: z.string(),
     })
-    .nullable(),
+    .nullish(),
   description: z.string().min(3, { message: "Обязательное поле" }),
 });
 
@@ -45,33 +47,46 @@ const callTypes = [
 ];
 
 export const CallForm = () => {
+  const { mutateAsync: createCall } = useCreateCall();
+  const toggleModal = useNewCallModal().toggle;
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
     defaultValues: {
-      date: format(new Date(), "dd.MM.yyyy"),
       callType: null,
       author: "",
       description: "",
     },
   });
-  const callType = form.watch("callType");
+  const callType = form.watch("callType") ?? null;
+  const currentDate = format(new Date(), "dd.MM.yyyy");
 
   const onSubmit = (data: Schema) => {
-    console.log(data);
+    const { author, callType, description } = data;
+    const _callType = callType?.value as CallType;
+    try {
+      createCall({
+        author,
+        callType: _callType,
+        description,
+      });
+      toggleModal();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-8">
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FieldRender label="Дата">
-              <span>{field.value}</span>
-            </FieldRender>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 pt-8">
+        <div className="grid grid-cols-6">
+          <span
+            role="label"
+            className="flex items-center col-span-2 font-semibold text-sm"
+          >
+            Дата
+          </span>
+          <span className="col-span-4 text-sm">{currentDate}</span>
+        </div>
         <FormField
           control={form.control}
           name="author"

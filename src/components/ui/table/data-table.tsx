@@ -22,8 +22,9 @@ import {
   TableRow,
 } from "./table";
 
-import { DataTablePagination } from "./data-table-pagination";
+import { useExistedCallModal } from "@/store";
 import { useState } from "react";
+import { DataTablePagination } from "./data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,6 +39,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const setCall = useExistedCallModal().setCall;
 
   const table = useReactTable({
     data,
@@ -89,6 +91,8 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  // @ts-expect-error TODO: EXTEND TDATA TYPE
+                  onClick={() => setCall(row.original.id)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
