@@ -6,7 +6,7 @@ export const CallTrigger = () => {
   return (
     <div className="flex justify-end">
       <Dialog>
-        <DialogTrigger className="flex items-center gap-2 text-blue-600 font-semibold group">
+        <DialogTrigger className="flex items-center gap-2 text-primary font-semibold group">
           <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
           Создать обращение
         </DialogTrigger>

@@ -1,326 +1,158 @@
-"use client";
+import * as React from "react"
+import * as SelectPrimitive from "@radix-ui/react-select"
+import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
-import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { ReactNode, useState } from "react";
-import { Button } from "./button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "./command";
-import { PopoverResponsive } from "./popover-responsive";
+import { cn } from "@/lib/utils"
 
-const VALUE_SEPARATOR = " ||| ";
+const Select = SelectPrimitive.Root
 
-type OptionRecord<Option> = {
-  readonly [Prop in keyof Option]: Option[Prop];
-};
+const SelectGroup = SelectPrimitive.Group
 
-type Props<Option, isMulti> = {
-  isMulti?: isMulti;
-  options: readonly Option[];
-  value: isMulti extends true ? readonly Option[] : Option | null;
-  onChange: (value: isMulti extends true ? Option[] : Option | null) => void;
-  renderSelected:
-    | keyof Option
-    | ((option: Option, handleDelete: () => void) => ReactNode);
-  renderOption: keyof Option | ((option: Option) => ReactNode);
-  searchBy?: keyof Option | (keyof Option)[];
-  placeholder?: string;
-  emptyPlaceholder?: string;
-  searchPlaceholder?: string;
-  className?: string;
-  classNames?: {
-    selectedContainer?: string;
-    selectedOption?: string;
-    option?: string;
-  };
-};
+const SelectValue = SelectPrimitive.Value
 
-export const Select = <
-  Option extends OptionRecord<Option>,
-  isMulti extends boolean = false
->(
-  props: Props<Option, isMulti>
-) => {
-  const { open, setOpen, ...logicProps } = useSelect(props);
+const SelectTrigger = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      className
+    )}
+    {...props}
+  >
+    {children}
+    <SelectPrimitive.Icon asChild>
+      <ChevronDown className="h-4 w-4 opacity-50" />
+    </SelectPrimitive.Icon>
+  </SelectPrimitive.Trigger>
+))
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
-  return (
-    <PopoverResponsive
-      open={open}
-      setOpen={setOpen}
-      content={<SelectList {...props} {...logicProps} />}
-      className="p-0"
+const SelectScrollUpButton = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.ScrollUpButton
+    ref={ref}
+    className={cn(
+      "flex cursor-default items-center justify-center py-1",
+      className
+    )}
+    {...props}
+  >
+    <ChevronUp className="h-4 w-4" />
+  </SelectPrimitive.ScrollUpButton>
+))
+SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
+
+const SelectScrollDownButton = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.ScrollDownButton
+    ref={ref}
+    className={cn(
+      "flex cursor-default items-center justify-center py-1",
+      className
+    )}
+    {...props}
+  >
+    <ChevronDown className="h-4 w-4" />
+  </SelectPrimitive.ScrollDownButton>
+))
+SelectScrollDownButton.displayName =
+  SelectPrimitive.ScrollDownButton.displayName
+
+const SelectContent = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+>(({ className, children, position = "popper", ...props }, ref) => (
+  <SelectPrimitive.Portal>
+    <SelectPrimitive.Content
+      ref={ref}
+      className={cn(
+        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        position === "popper" &&
+          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+        className
+      )}
+      position={position}
+      {...props}
     >
-      <Button
-        variant={"outline"}
-        aria-roledescription="select"
+      <SelectScrollUpButton />
+      <SelectPrimitive.Viewport
         className={cn(
-          "justify-between gap-4 pl-3 pr-2 h-auto font-normal",
-          props.className
+          "p-1",
+          position === "popper" &&
+            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
         )}
       >
-        <div
-          className={cn(
-            "flex flex-wrap gap-1",
-            props.classNames?.selectedContainer
-          )}
-        >
-          <ButtonContent {...props} {...logicProps} />
-        </div>
-        <ChevronsUpDown
-          className={cn("w-4 h-4 opacity-50 shrink-0", {
-            "opacity-100": open,
-          })}
-        />
-      </Button>
-    </PopoverResponsive>
-  );
-};
+        {children}
+      </SelectPrimitive.Viewport>
+      <SelectScrollDownButton />
+    </SelectPrimitive.Content>
+  </SelectPrimitive.Portal>
+))
+SelectContent.displayName = SelectPrimitive.Content.displayName
 
-const ButtonContent = <
-  Option extends OptionRecord<Option>,
-  isMulti extends boolean = false
->({
-  value,
-  placeholder,
-  renderSelected,
-  classNames,
-  deleteOption,
-}: Pick<
-  Props<Option, isMulti>,
-  "value" | "placeholder" | "renderSelected" | "classNames"
-> &
-  Pick<ReturnType<typeof useSelect<Option, isMulti>>, "deleteOption">) => {
-  const noValue = !value || (Array.isArray(value) && value.length === 0);
-  const isMulti = Array.isArray(value);
-  const isCustom = typeof renderSelected === "function";
+const SelectLabel = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Label>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.Label
+    ref={ref}
+    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
+    {...props}
+  />
+))
+SelectLabel.displayName = SelectPrimitive.Label.displayName
 
-  if (noValue) {
-    return (
-      <span className="text-muted-foreground">
-        {placeholder ?? "Выбрать..."}
-      </span>
-    );
-  }
+const SelectItem = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <SelectPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </SelectPrimitive.ItemIndicator>
+    </span>
 
-  if (isMulti && !isCustom) {
-    return value.map((v, index) => (
-      <div
-        key={index}
-        className={cn(
-          "px-2 py-0.5 rounded-md border bg-background",
-          classNames?.selectedOption
-        )}
-      >
-        {v[renderSelected as keyof Option]}
-      </div>
-    ));
-  }
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+  </SelectPrimitive.Item>
+))
+SelectItem.displayName = SelectPrimitive.Item.displayName
 
-  if (isMulti && isCustom) {
-    return value.map((v, index) => (
-      <div key={index} className={cn(classNames?.selectedOption)}>
-        {renderSelected(v, () => {
-          deleteOption(v);
-        })}
-      </div>
-    ));
-  }
+const SelectSeparator = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    {...props}
+  />
+))
+SelectSeparator.displayName = SelectPrimitive.Separator.displayName
 
-  if (!isMulti && isCustom) {
-    return (
-      <div className={classNames?.selectedOption}>
-        {renderSelected(value as Option, () => {
-          deleteOption(value as Option);
-        })}
-      </div>
-    );
-  }
-
-  if (!isMulti && !isCustom) {
-    return (
-      <div className={classNames?.selectedOption}>
-        {String((value as Option)[renderSelected as keyof Option])}
-      </div>
-    );
-  }
-
-  return null;
-};
-
-const SelectList = <
-  Option extends OptionRecord<Option>,
-  isMulti extends boolean = false
->({
-  options,
-  searchBy,
-  getCommandItemValue,
-  handleChangeOption,
-  renderOption,
-  value,
-  classNames,
-  emptyPlaceholder,
-  searchPlaceholder,
-}: Pick<
-  Props<Option, isMulti>,
-  | "options"
-  | "searchBy"
-  | "renderOption"
-  | "value"
-  | "classNames"
-  | "emptyPlaceholder"
-  | "searchPlaceholder"
-> &
-  Pick<
-    ReturnType<typeof useSelect<Option, isMulti>>,
-    "getCommandItemValue" | "handleChangeOption"
-  >) => {
-  return (
-    <Command>
-      {searchBy && <CommandInput placeholder={searchPlaceholder ?? "Поиск"} />}
-      <CommandList>
-        <CommandEmpty>{emptyPlaceholder ?? "Ничего не найдено"}</CommandEmpty>
-        <CommandGroup>
-          {options.map((option, index) => (
-            <CommandItem
-              key={index}
-              value={getCommandItemValue(option, index)}
-              onSelect={(v) => handleChangeOption(v, index)}
-              className={cn(
-                "justify-between gap-4 items-center",
-                classNames?.option
-              )}
-            >
-              {typeof renderOption === "string" && String(option[renderOption])}
-              {typeof renderOption === "function" && (
-                <div>{renderOption(option)}</div>
-              )}
-              <Check
-                className={cn("w-4 h-4 opacity-0", {
-                  "opacity-100":
-                    value === option ||
-                    (Array.isArray(value) && value.includes(option)),
-                })}
-              />
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      </CommandList>
-    </Command>
-  );
-};
-
-const useSelect = <
-  Option extends OptionRecord<Option>,
-  isMulti extends boolean = false
->({
-  options,
-  value,
-  onChange,
-  isMulti,
-  searchBy,
-}: Pick<
-  Props<Option, isMulti>,
-  "options" | "isMulti" | "value" | "onChange" | "searchBy"
->) => {
-  const [open, setOpen] = useState<boolean>(false);
-
-  const handleChangeOption = (newOptionString: string, index: number): void => {
-    const newOption = getOptionByValue(newOptionString, index);
-
-    if (isMulti) {
-      return changeOptionMulti(newOption);
-    }
-    return changeOptionSingle(newOption);
-  };
-
-  const isOptionSelected = (option: Option) => {
-    if (isMulti) {
-      return (value as Option[]).includes(option);
-    }
-    return (value as Option) === option;
-  };
-
-  const getOptionByValue = (optionString: string, index: number) => {
-    if (!searchBy) {
-      return options[index];
-    }
-
-    if (Array.isArray(searchBy)) {
-      return options.find(
-        (option) =>
-          searchBy
-            .map((key) => option[key as keyof Option])
-            .join(VALUE_SEPARATOR)
-            .toLowerCase() === optionString
-      )!;
-    }
-
-    return options.find(
-      (option) =>
-        String(option[searchBy as keyof Option]).toLowerCase() === optionString
-    )!;
-  };
-
-  const changeOptionSingle = (option: Option) => {
-    const onChangeSingle = onChange as Props<Option, false>["onChange"];
-
-    if (isOptionSelected(option)) {
-      onChangeSingle(null);
-    } else {
-      onChangeSingle(option);
-    }
-    setOpen(false);
-  };
-
-  const changeOptionMulti = (option: Option) => {
-    const oldOptions = value as Option[];
-    const onChangeMulti = onChange as Props<Option, true>["onChange"];
-
-    if (isOptionSelected(option)) {
-      return deleteOption(option);
-    }
-
-    const updatedOptions = [...oldOptions, option];
-    onChangeMulti(updatedOptions);
-  };
-
-  const deleteOption = (option: Option) => {
-    if (isMulti) {
-      const onChangeMulti = onChange as Props<Option, true>["onChange"];
-      const updatedOptions = (value as Option[]).filter((o) => o !== option);
-      return onChangeMulti(updatedOptions);
-    }
-
-    const onChangeSingle = onChange as Props<Option, false>["onChange"];
-    return onChangeSingle(null);
-  };
-
-  const getCommandItemValue = (option: Option, index: number): string => {
-    if (!searchBy) {
-      return index.toString();
-    }
-
-    if (Array.isArray(searchBy)) {
-      return searchBy
-        .map((key) => option[key as keyof Option])
-        .join(VALUE_SEPARATOR)
-        .toLowerCase();
-    }
-
-    return String(option[searchBy as keyof Option]);
-  };
-
-  return {
-    open,
-    setOpen,
-    handleChangeOption,
-    getCommandItemValue,
-    deleteOption,
-  };
-};
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+}

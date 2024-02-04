@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { Select } from "./ui/select";
+import { Select } from "./ui/custom-select";
 import { Textarea } from "./ui/textarea";
 
 const schema = z.object({
@@ -27,7 +27,7 @@ const schema = z.object({
   description: z.string().min(3, { message: "Обязательное поле" }),
 });
 
-type Schema = z.infer<typeof schema>;
+export type Schema = z.infer<typeof schema>;
 
 const callTypes = [
   {
