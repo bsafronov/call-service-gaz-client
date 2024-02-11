@@ -3,7 +3,7 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 
 const HomePage = () => {
   return (
-    <div className="mt-16 mx-auto max-w-screen-xl px-4">
+    <div className="mt-16 container">
       <CallTrigger />
       <CallTable />
     </div>

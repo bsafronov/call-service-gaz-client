@@ -32,22 +32,28 @@ export const columns: ColumnDef<Call>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Тип" />
     ),
-    cell: ({ row }) => typeLabel[row.original.callType],
+    cell: ({ row }) => (
+      <div className="text-center">{typeLabel[row.original.callType]}</div>
+    ),
   },
   {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Статус" />
     ),
+
     cell: ({ row }) => (
-      <span
-        className={cn(
-          "font-semibold px-2 rounded-md py-1",
-          statusStyle[row.original.callStatus]
-        )}
-      >
-        {statusLabel[row.original.callStatus]}
-      </span>
+      <>
+        <div
+          className={cn(
+            "absolute inset-0",
+            statusStyle[row.original.callStatus]
+          )}
+        />
+        <span className="relative block text-center text-primary-foreground">
+          {statusLabel[row.original.callStatus]}
+        </span>
+      </>
     ),
   },
 ];

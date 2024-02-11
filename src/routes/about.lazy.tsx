@@ -1,4 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { EyeOff } from "lucide-react";
 
 const AboutPage = () => {
   return (
@@ -10,6 +11,7 @@ const AboutPage = () => {
         <h3 className="text-2xl font-semibold text-secondary-foreground">
           Здесь ничего нет
         </h3>
+        <EyeOff className="w-24 h-24" />
       </div>
     </div>
   );

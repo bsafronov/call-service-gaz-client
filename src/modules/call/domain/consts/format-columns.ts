@@ -13,7 +13,7 @@ export const typeLabel: Record<CallType, string> = {
 };
 
 export const statusStyle: Record<CallStatus, string> = {
-  "in queue": "bg-slate-200",
-  "in progress": "bg-amber-300",
-  finished: "bg-emerald-300",
+  "in queue": "bg-slate-400",
+  "in progress": "bg-amber-500",
+  finished: "bg-green-500",
 };

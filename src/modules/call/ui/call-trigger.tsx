@@ -6,7 +6,7 @@ export const CallTrigger = () => {
   return (
     <div className="flex justify-end">
       <button
-        className="flex gap-2 items-center text-primary font-semibold"
+        className="flex gap-2 items-center text-primary font-semibold group"
         onClick={toggle}
       >
         <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />

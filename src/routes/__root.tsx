@@ -32,14 +32,20 @@ const Header = () => {
   return (
     <header className="h-16 bg-primary flex items-center justify-center">
       <div className="container flex justify-between items-center text-primary-foreground">
-        <Link to={"/"} className="text-4xl font-bold">
-          Logo
+        <Link to={"/"} className="text-4xl font-semibold">
+          CallService
         </Link>
         <div className="flex gap-4 font-semibold">
-          <Link to={"/"} className="[&.active]:text-secondary">
+          <Link
+            to={"/"}
+            className="relative after:h-0.5 after:transparent after:rounded-md after:absolute after:-bottom-1 after:left-0 after:right-0 [&.active]:after:bg-primary-foreground"
+          >
             Главная
           </Link>
-          <Link to={"/about"} className="[&.active]:text-secondary">
+          <Link
+            to={"/about"}
+            className="relative after:h-0.5 after:transparent after:rounded-md after:absolute after:-bottom-1 after:left-0 after:right-0 [&.active]:after:bg-primary-foreground"
+          >
             О нас
           </Link>
         </div>
