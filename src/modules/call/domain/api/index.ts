@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Call, CreateCallDTO } from "../types";
 import { api } from "@/shared/api";
@@ -8,9 +13,9 @@ const callService = {
     const res = await api.post<Call>("/calls", data);
     return res.data;
   },
-  fetchCalls: async () => {
-    const res = await api.get<Call[]>("/calls");
-    return res.data;
+  fetchCalls: async ({ pageParam = 0 }) => {
+    const res = await api.get<Call[]>(`/calls?take=100&skip=${pageParam}`);
+    return { calls: res.data, prevOffset: pageParam };
   },
   fetchCall: async (id: Call["id"]) => {
     const res = await api.get<Call>(`/calls/${id}`);
@@ -19,9 +24,17 @@ const callService = {
 };
 
 export const useFetchCalls = () => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["calls"],
     queryFn: callService.fetchCalls,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.calls.length < 100) {
+        return undefined;
+      }
+
+      return lastPage.prevOffset + 100;
+    },
   });
 };
 

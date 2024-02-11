@@ -8,7 +8,7 @@ export const Route = createRootRoute({
     <Providers>
       <div className="flex flex-col h-screen">
         <Header />
-        <main className="grow">
+        <main className="grow container">
           <Outlet />
         </main>
       </div>
@@ -30,7 +30,7 @@ const Providers = ({ children }: { children?: React.ReactNode }) => {
 
 const Header = () => {
   return (
-    <header className="h-16 bg-primary flex items-center justify-center">
+    <header className="py-4 bg-primary flex items-center justify-center">
       <div className="container flex justify-between items-center text-primary-foreground">
         <Link to={"/"} className="text-4xl font-semibold">
           CallService

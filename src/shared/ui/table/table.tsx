@@ -6,13 +6,11 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
-    <table
-      ref={ref}
-      className={cn("w-full caption-bottom text-sm", className)}
-      {...props}
-    />
-  </div>
+  <table
+    ref={ref}
+    className={cn("caption-bottom text-sm", className)}
+    {...props}
+  />
 ));
 Table.displayName = "Table";
 
@@ -32,11 +30,7 @@ const TableBody = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <tbody
-    ref={ref}
-    className={cn("divide-y before:block before:h-2 border-b", className)}
-    {...props}
-  />
+  <tbody ref={ref} className={cn("", className)} {...props} />
 ));
 TableBody.displayName = "TableBody";
 
@@ -59,7 +53,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted divide-x group-[.thead]:divide-primary group-[.thead]:hover:bg-primary border group-[.thead]:border-primary",
+      "hover:bg-muted/50 data-[state=selected]:bg-muted group-[.thead]:divide-primary group-[.thead]:hover:bg-primary divide-x group-[.thead]:border-primary border-b last:border-none",
       className
     )}
     {...props}
@@ -74,7 +68,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "p-2 text-left align-middle font-medium text-primary-foreground [&:has([role=checkbox])]:pr-0",
+      "p-2 align-middle font-medium text-primary-foreground [&:has([role=checkbox])]:pr-0",
       className
     )}
     {...props}
@@ -88,7 +82,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn("relative p-2 [&:has([role=checkbox])]:pr-0", className)}
+    className={cn("flex relative p-2 [&:has([role=checkbox])]:pr-0", className)}
     {...props}
   />
 ));
